@@ -9,7 +9,7 @@ SerialReader::SerialReader(QObject *parent)
 
 bool SerialReader::openSerialPort()
 {
-    m_serial.setPortName("/dev/serial0"); //rpi
+    m_serial.setPortName("/dev/ttyS0"); //rpi
     //m_serial.setPortName("/dev/ttyUSB0"); //ttl Change to your port
     m_serial.setBaudRate(QSerialPort::Baud115200);
     m_serial.setDataBits(QSerialPort::Data8);
