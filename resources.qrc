@@ -1,0 +1,26 @@
+<RCC>
+    <qresource prefix="/">
+        <file>qml/Main.qml</file>
+        <file>qml/SpeedWidget.qml</file>
+        <file>qml/NavigationWidget.qml</file>
+        <file>qml/MediaWidget.qml</file>
+        <file>qml/TopBar.qml</file>
+        <file>qml/GearIndicator.qml</file>
+        <file>qml/CarView.qml</file>
+        <file>assets/border_.png</file>
+        <file>assets/cluster_border.png</file>
+        <file>assets/left_arrow.png</file>
+        <file>assets/charlie_puth_album.png</file>
+        <file>assets/paoimage.png</file>
+        <file>assets/paoimage_dark.png</file>
+        <file>assets/IMG_0834.PNG</file>
+        <file>assets/fuel_pump.png</file>
+        <file>assets/battery.png</file>
+        <file>assets/fuel_pump.svg</file>
+        <file>assets/battery.svg</file>
+        <file>assets/fuel_pump_dark.svg</file>
+        <file>assets/battery_dark.svg</file>
+        <file>qml/RpmWidget.qml</file>
+        <file>assets/modified_car_image_smaller.png</file>
+    </qresource>
+</RCC>
