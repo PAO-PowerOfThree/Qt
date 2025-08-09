@@ -1,0 +1,36 @@
+<RCC>
+    <qresource prefix="/">
+        <file>qml/Main.qml</file>
+        <file>assets/border_.png</file>
+        <file>assets/cluster_border.png</file>
+        <file>assets/left_arrow.png</file>
+        <file>assets/charlie_puth_album.png</file>
+        <file>assets/paoimage.png</file>
+        <file>assets/paoimage_dark.png</file>
+        <file>assets/IMG_0834.PNG</file>
+        <file>assets/album_cover.png</file>
+        <file>assets/display_background.png</file>
+        <file>assets/car_image_new.png</file>
+        <file>assets/car_back.png</file>
+        <file>assets/paoyalla.jpg</file>
+        <file>assets/top_dark.png</file>
+        <file>assets/bluetooth_icon.png</file>
+        <file>assets/wifi_icon.png</file>
+        <file>assets/weather_sunny.png</file>
+        <file>assets/network-cellular-signal-none-svgrepo-com.svg</file>
+        <file>assets/network-cellular-signal-weak-svgrepo-com.svg</file>
+        <file>assets/network-cellular-signal-ok-svgrepo-com.svg</file>
+        <file>assets/network-cellular-signal-good-svgrepo-com.svg</file>
+        <file>assets/network-cellular-signal-excellent-svgrepo-com.svg</file>
+        <file>assets/eva_bluetooth-fill.svg</file>
+        <file>assets/bluetooth_icon.png.svg</file>
+        <file>assets/icn_leftindicator.svg</file>
+        <file>assets/icn_leftindicator_glow.svg</file>
+        <file>assets/icn_rightindicator.svg</file>
+        <file>assets/icn_rightindicatoron.svg</file>
+        <file>assets/fuel_pump.svg</file>
+        <file>assets/battery.svg</file>
+        <file>assets/Pi7_cropper.png</file>
+
+    </qresource>
+</RCC>
