@@ -3,7 +3,6 @@ import QtQuick.Window 2.15
 import QtQuick.Controls 2.15
 import QtQuick.Layouts 1.15
 import QtQuick.Effects  // This replaces QtGraphicalEffects in Qt 6
-import Qt5Compat.GraphicalEffects  // Required for ColorOverlay in Qt 6.8.3
 import PaoCluster
 
 ApplicationWindow {
@@ -453,40 +452,41 @@ ApplicationWindow {
         }*/
 
             // Fuel Level
-                Row {
-                    spacing: 6
-                    anchors.verticalCenter: parent.verticalCenter
+            Row {
+                spacing: 6
+                anchors.verticalCenter: parent.verticalCenter
 
-                    property int fuelLevel: BusReader.fuelLevel * 100 / 4095  // Use context property directly
+                property int fuelLevel: BusReader.fuelLevel * 100 / 4095  // Context property
 
-                    // Fuel icon with dynamic color
-                    Item {
-                        width: 28
-                        height: 28
+                // Fuel icon with dynamic color
+                Item {
+                    width: 28
+                    height: 28
 
-                        Image {
-                            id: fuelIcon
-                            width: 28
-                            height: 28
-                            source: "qrc:/assets/fuel_pump.svg"
-                            fillMode: Image.PreserveAspectFit
-                        }
-
-                        ColorOverlay {
-                            anchors.fill: fuelIcon
-                            source: fuelIcon
-                            color: parent.parent.fuelLevel > 67 ? "green" :
-                                   parent.parent.fuelLevel > 34 ? "yellow" : "red"
-                        }
+                    Image {
+                        id: fuelIcon
+                        anchors.fill: parent
+                        source: "qrc:/assets/fuel_pump.svg"
+                        fillMode: Image.PreserveAspectFit
                     }
 
-                    Text {
-                        text: parent.fuelLevel + "%"
-                        color: "white"
-                        font.pixelSize: 18
-                        font.bold: true
+                    MultiEffect {
+                        anchors.fill: fuelIcon
+                        source: fuelIcon
+                        colorization: 1.0
+                        colorizationColor: parent.parent.fuelLevel > 67 ? "green" :
+                                           parent.parent.fuelLevel > 34 ? "yellow" : "red"
                     }
                 }
+
+                Text {
+                    text: parent.fuelLevel + "%"
+                    color: "white"
+                    font.pixelSize: 18
+                    font.bold: true
+                }
+            }
+
 
             // Battery Level
            /* Row {
@@ -525,40 +525,41 @@ ApplicationWindow {
             }*/
 
                 // Battery Level
-                    Row {
-                        spacing: 6
-                        anchors.verticalCenter: parent.verticalCenter
+                Row {
+                    spacing: 6
+                    anchors.verticalCenter: parent.verticalCenter
 
-                        property int batteryLevel: BusReader.batteryLevel * 100 / 4095  // Use context property directly
+                    property int batteryLevel: BusReader.batteryLevel * 100 / 4095  // Context property
 
-                        // Battery icon with dynamic color
-                        Item {
-                            width: 28
-                            height: 28
+                    // Battery icon with dynamic color
+                    Item {
+                        width: 28
+                        height: 28
 
-                            Image {
-                                id: batteryIcon
-                                width: 28
-                                height: 28
-                                source: "qrc:/assets/battery.svg"
-                                fillMode: Image.PreserveAspectFit
-                            }
-
-                            ColorOverlay {
-                                anchors.fill: batteryIcon
-                                source: batteryIcon
-                                color: parent.parent.batteryLevel > 67 ? "green" :
-                                       parent.parent.batteryLevel > 34 ? "yellow" : "red"
-                            }
+                        Image {
+                            id: batteryIcon
+                            anchors.fill: parent
+                            source: "qrc:/assets/battery.svg"
+                            fillMode: Image.PreserveAspectFit
                         }
 
-                        Text {
-                            text: parent.batteryLevel + "%"
-                            color: "white"
-                            font.pixelSize: 18
-                            font.bold: true
+                        MultiEffect {
+                            anchors.fill: batteryIcon
+                            source: batteryIcon
+                            colorization: 1.0
+                            colorizationColor: parent.parent.batteryLevel > 67 ? "green" :
+                                               parent.parent.batteryLevel > 34 ? "yellow" : "red"
                         }
                     }
+
+                    Text {
+                        text:parent.batteryLevel + "%"
+                        color: "white"
+                        font.pixelSize: 18
+                        font.bold: true
+                    }
+                }
+
         }
     }
 }
