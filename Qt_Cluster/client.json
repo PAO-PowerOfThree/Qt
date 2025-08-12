@@ -1,0 +1,45 @@
+{
+  "unicast": "192.168.2.2",
+  "logging": {
+    "level": "debug",
+    "console": true
+  },
+  "applications": [
+    {
+      "name": "client",
+      "id": "0x2222",
+      "path": "/tmp/vsomeipd"
+    }
+  ],
+  "services": [
+    {
+      "service": "0x4111",
+      "instance": "0x3111",
+      "subscribe-on-availability": true,
+      "methods": ["0x6000"],
+      "events": [
+        { "id": "0x7001", "is-field": false }
+      ],
+      "event-groups": [
+        {
+          "id": "0x01",
+          "events": ["0x7001"],
+          "multicast": "224.224.224.245"
+        }
+      ],
+      "unreliable": 30491
+    }
+  ],
+  "service-discovery": {
+    "enable": true,
+    "multicast": "224.244.224.245",
+    "port": 30490,
+    "protocol": "udp",
+    "initial_delay_min": 100,
+    "initial_delay_max": 300,
+    "repetition_base_delay": 200,
+    "repetition_max": 3,
+    "ttl": 3
+  },
+  "routing": "client"
+}
