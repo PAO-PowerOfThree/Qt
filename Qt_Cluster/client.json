@@ -28,6 +28,22 @@
         }
       ],
       "unreliable": 30491
+    },
+    {
+      "service": "0x4222",
+      "instance": "0x3222",
+      "methods": [],
+      "events": [
+        { "id": "0x7002", "is-field": false }
+      ],
+      "event-groups": [
+        {
+          "id": "0x02",
+          "events": ["0x7002"],
+          "multicast": "224.224.224.245"
+        }
+      ],
+      "unreliable": 30492
     }
   ],
   "service-discovery": {

@@ -15,7 +15,7 @@ set(BOOST_INCLUDEDIR "$ENV{SDKTARGETSYSROOT}/usr/include")
 set(BOOST_LIBRARYDIR "$ENV{SDKTARGETSYSROOT}/usr/lib")
 set(Boost_NO_SYSTEM_PATHS ON)
 
-find_package(Qt6 REQUIRED COMPONENTS Quick Core SerialBus)
+find_package(Qt6 REQUIRED COMPONENTS Quick Core SerialBus SerialPort)
 find_package(Boost REQUIRED COMPONENTS system thread)
 find_package(vsomeip3 REQUIRED)
 
@@ -29,6 +29,8 @@ qt_add_executable(appPaoCluster
     busreader.h
     client.cpp
     client.hpp
+    serialmanager.cpp
+    serialmanager.h
 )
 
 qt_add_qml_module(appPaoCluster
@@ -36,11 +38,18 @@ qt_add_qml_module(appPaoCluster
     VERSION 1.0
     QML_FILES
         qml/Main.qml
+        qml/Fingerprint.qml
+        qml/Cluster.qml
+        qml/ErrorDialog.qml
+        qml/PasswordDialog.qml
+
     SOURCES
         busreader.h
         busreader.cpp
         client.hpp
         client.cpp
+        serialmanager.h
+        serialmanager.cpp
 )
 
 # Load QML & image from .qrc
@@ -64,6 +73,7 @@ target_link_libraries(appPaoCluster
         Qt6::Quick
         Qt6::Core
         Qt6::SerialBus
+        Qt6::SerialPort
         vsomeip3
         ${Boost_LIBRARIES}
 )
