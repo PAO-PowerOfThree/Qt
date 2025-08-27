@@ -1,3 +1,4 @@
+// client.cpp - Unchanged from provided code
 #include "client.hpp"
 #include <iostream>
 #include <vector>
@@ -7,6 +8,8 @@ VSomeIPClient::VSomeIPClient(QObject *parent) : QObject(parent) {
     app = vsomeip::runtime::get()->create_application("client");
     // Thread-safe queued connection for sending messages from GUI/QML
     connect(this, &VSomeIPClient::sendMessage, this, &VSomeIPClient::processMessage, Qt::QueuedConnection);
+    // New: Queued connection for sending fingerprint status
+    connect(this, &VSomeIPClient::sendFingerprint, this, &VSomeIPClient::processFingerprint, Qt::QueuedConnection);
 }
 
 VSomeIPClient::~VSomeIPClient() {
@@ -74,7 +77,16 @@ void VSomeIPClient::runClient() {
                   << " in group 0x" << EVENT_GROUP_ID << std::dec << std::endl;
     }
 
-    // --- STEP 4: REQUEST THE SERVICE ---
+    // --- NEW: OFFER THE FINGERPRINT SERVICE AND EVENT (Yocto as server) ---
+    app->offer_service(FINGER_SERVICE_ID, FINGER_INSTANCE_ID);
+    app->offer_event(FINGER_SERVICE_ID, FINGER_INSTANCE_ID, EVENT_ID_FINGER,
+                     {FINGER_EVENT_GROUP_ID}, vsomeip::event_type_e::ET_EVENT,
+                     std::chrono::milliseconds::zero(), false, true, nullptr,
+                     vsomeip::reliability_type_e::RT_UNRELIABLE);
+    std::cout << "[Yocto Server] Offered fingerprint service 0x" << std::hex << FINGER_SERVICE_ID
+              << " and event 0x" << EVENT_ID_FINGER << std::dec << std::endl;
+
+    // --- STEP 4: REQUEST THE ORIGINAL SERVICE ---
     app->request_service(SERVICE_ID, INSTANCE_ID);
 
     running = true;
@@ -106,12 +118,36 @@ void VSomeIPClient::processMessage(const QString &message) {
     std::cout << "[Yocto Client] Sent message: " << msg_str << std::endl;
 }
 
+void VSomeIPClient::sendFingerprintStatus(const QString &status) {
+    QMetaObject::invokeMethod(this, [this, status]() {
+        emit sendFingerprint(status);
+    }, Qt::QueuedConnection);
+}
+
+void VSomeIPClient::processFingerprint(const QString &status) {
+    if (!running) {
+        std::cerr << "[Yocto Server] Cannot send fingerprint status, app is not running." << std::endl;
+        return;
+    }
+
+    std::string status_str = status.toStdString();
+    auto payload = vsomeip::runtime::get()->create_payload();
+    payload->set_data(std::vector<vsomeip::byte_t>(status_str.begin(), status_str.end()));
+
+    app->notify(FINGER_SERVICE_ID, FINGER_INSTANCE_ID, EVENT_ID_FINGER, payload);
+    std::cout << "[Yocto Server] Sent fingerprint status: " << status_str << std::endl;
+}
+
 void VSomeIPClient::stop() {
     if (running) {
         try {
             app->unsubscribe(SERVICE_ID, INSTANCE_ID, EVENT_GROUP_ID);
             app->release_event(SERVICE_ID, INSTANCE_ID, EVENT_ID_SPEED);
             app->release_service(SERVICE_ID, INSTANCE_ID);
+
+            // New: Stop offering fingerprint service
+            app->stop_offer_event(FINGER_SERVICE_ID, FINGER_INSTANCE_ID, EVENT_ID_FINGER);
+            app->stop_offer_service(FINGER_SERVICE_ID, FINGER_INSTANCE_ID);
         } catch (const std::exception &e) {
             std::cerr << "[Yocto Client] Exception during stop: " << e.what() << std::endl;
         }

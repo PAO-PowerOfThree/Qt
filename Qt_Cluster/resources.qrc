@@ -31,6 +31,10 @@
         <file>assets/fuel_pump.svg</file>
         <file>assets/battery.svg</file>
         <file>assets/Pi7_cropper.png</file>
+        <file>qml/Fingerprint.qml</file>
+        <file>qml/Cluster.qml</file>
+        <file>qml/ErrorDialog.qml</file>
+        <file>qml/PasswordDialog.qml</file>
 
     </qresource>
 </RCC>

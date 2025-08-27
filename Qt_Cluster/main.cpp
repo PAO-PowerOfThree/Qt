@@ -1,3 +1,4 @@
+// main.cpp - Updated to load the integrated Main.qml
 #include <QGuiApplication>
 #include <QQmlApplicationEngine>
 #include <QQmlContext>
@@ -5,6 +6,7 @@
 #include "systemmanager.h"
 #include "busreader.h"
 #include "client.hpp"
+#include "serialmanager.h"
 
 int main(int argc, char *argv[])
 {
@@ -20,16 +22,21 @@ int main(int argc, char *argv[])
     engine.rootContext()->setContextProperty("SystemManager", SystemManager::instance());
 
     // Instantiate VSomeIPClient and set it as a context property
-    VSomeIPClient vsomeipClient;
-    engine.rootContext()->setContextProperty("vsomeipClient", &vsomeipClient);
+    VSomeIPClient *vsomeipClient = new VSomeIPClient(&app);
+    engine.rootContext()->setContextProperty("vsomeipClient", vsomeipClient);
+
+    // SerialManager (now has its own VSomeIPClient inside)
+    SerialManager *serialManager = new SerialManager(&app);
+    serialManager->setVSomeIPClient(vsomeipClient);
+    engine.rootContext()->setContextProperty("serialManager", serialManager);
 
     engine.load(QUrl(QStringLiteral("qrc:/qml/Main.qml")));
     if (engine.rootObjects().isEmpty())
         return -1;
 
     // Start the SOME/IP client after QML is loaded
-    QTimer::singleShot(0, [&vsomeipClient]() {
-        vsomeipClient.startClient();
+    QTimer::singleShot(0, [vsomeipClient]() {
+        vsomeipClient->startClient();
     });
 
     return app.exec();
