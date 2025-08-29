@@ -35,6 +35,8 @@
         <file>qml/Cluster.qml</file>
         <file>qml/ErrorDialog.qml</file>
         <file>qml/PasswordDialog.qml</file>
+        <file>assets/volvo.gif</file>
+
 
     </qresource>
 </RCC>
