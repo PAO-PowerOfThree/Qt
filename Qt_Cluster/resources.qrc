@@ -36,6 +36,9 @@
         <file>qml/ErrorDialog.qml</file>
         <file>qml/PasswordDialog.qml</file>
         <file>assets/volvo.gif</file>
+        <file>assets/carcora.png</file>
+         <file>assets/backgr.png</file>
+
 
 
     </qresource>
