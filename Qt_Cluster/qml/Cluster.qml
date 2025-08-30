@@ -1,16 +1,13 @@
-import QtQuick 2.15
-import QtQuick.Window 2.15
-import QtQuick.Controls 2.15
-import QtQuick.Layouts 2.15
-import QtQuick.Effects 2.15
+// Cluster.qml - Content from the original project Main.qml, adapted for integration
+// (Remove ApplicationWindow)
+import QtQuick
+import QtQuick.Controls
+import QtQuick.Layouts
+import QtQuick.Effects
 import PaoCluster
 
-ApplicationWindow {
-    id: window
-    width: 1024
-    height: 600
-    visible: true
-    color: "black" // fallback
+Item {
+    anchors.fill: parent
 
     // Property to hold the current speed
     property string currentSpeed: "0"
@@ -92,11 +89,11 @@ ApplicationWindow {
     Item {
         id: topBar
         width: parent.width
-        height: 51
-        anchors.top: parent.top
-        anchors.topMargin: 0
+        height: 121
 
         property string currentTime: Qt.formatDateTime(new Date(), "hh:mm AP  dd MMM")
+        property bool leftIndicatorOn: false
+        property bool rightIndicatorOn: false
 
         Timer {
             id: clockTimer
@@ -111,20 +108,43 @@ ApplicationWindow {
         Image {
             id: background
             source: "qrc:/assets/top_dark.png"
-            anchors.fill: parent
+            anchors.top: parent.top
+            anchors.horizontalCenter: parent.horizontalCenter
+            anchors.topMargin: 70.5
             width: parent.width - 455
             height: 51
             fillMode: Image.Stretch
-            anchors.horizontalCenter: parent.horizontalCenter
         }
 
         Row {
             anchors.centerIn: background
             spacing: 40
 
+            MouseArea {
+                width: 30
+                height: 30
+                onClicked: BusReader.setLedState(!BusReader.ledState)
+                Image {
+                    id: leftIndicatorImage
+                    anchors.fill: parent
+                    fillMode: Image.PreserveAspectFit
+                    source: BusReader.ledState
+                        ? "qrc:/assets/icn_leftindicator_glow.svg"
+                        : "qrc:/assets/icn_leftindicator.svg"
+                    opacity: 1.0
+                }
+                Timer {
+                    id: leftBlinkTimer
+                    interval: 500
+                    repeat: true
+                    running: BusReader.ledState
+                    onTriggered: leftIndicatorImage.opacity = leftIndicatorImage.opacity === 1 ? 0.3 : 1
+                }
+            }
+
             Text {
                 text: topBar.currentTime
-                color: "black"
+                color: "white"
                 font.pixelSize: 16
                 verticalAlignment: Text.AlignVCenter
             }
@@ -140,7 +160,7 @@ ApplicationWindow {
                 }
                 Text {
                     text: "22°C"
-                    color: "black"
+                    color: "white"
                     font.pixelSize: 14
                     verticalAlignment: Text.AlignVCenter
                 }
@@ -180,6 +200,28 @@ ApplicationWindow {
                         : "qrc:/assets/bluetooth_icon.png.svg"
                 }
             }
+
+            MouseArea {
+                width: 30
+                height: 30
+                onClicked: BusReader.setRightIndicatorState(!BusReader.rightIndicatorState)
+                Image {
+                    id: rightIndicatorImage
+                    anchors.fill: parent
+                    fillMode: Image.PreserveAspectFit
+                    source: BusReader.rightIndicatorState
+                        ? "qrc:/assets/icn_rightindicatoron.svg"
+                        : "qrc:/assets/icn_rightindicator.svg"
+                    opacity: 1.0
+                }
+                Timer {
+                    id: rightBlinkTimer
+                    interval: 500
+                    repeat: true
+                    running: BusReader.rightIndicatorState
+                    onTriggered: rightIndicatorImage.opacity = rightIndicatorImage.opacity === 1 ? 0.3 : 1
+                }
+            }
         }
     }
 
@@ -197,14 +239,14 @@ ApplicationWindow {
                 spacing: 5
                 Text {
                     text: "km/h"
-                    color: "black"
+                    color: "white"
                     font.pixelSize: 18
                     horizontalAlignment: Text.AlignHCenter
                     anchors.horizontalCenter: parent.horizontalCenter
                 }
                 Text {
                     text: currentSpeed
-                    color: "black" 
+                    color: "#FFFFFF" 
                     font.pixelSize: 72
                     font.bold: true
                     horizontalAlignment: Text.AlignHCenter
@@ -216,7 +258,56 @@ ApplicationWindow {
             anchors.bottom: parent.bottom
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.bottomMargin: 20
-            spacing: 60
+            spacing: 30
+
+            Row {
+                spacing: 8
+                anchors.verticalCenter: parent.verticalCenter
+                Image {
+                    width: 32
+                    height: 32
+                    source: "qrc:/assets/album_cover.png"
+                    fillMode: Image.PreserveAspectCrop
+                }
+                Column {
+                    spacing: 2
+                    anchors.verticalCenter: parent.verticalCenter
+                    Text {
+                        text: "▶"
+                        color: "white"
+                        font.pixelSize: 14
+                    }
+                    Text {
+                        text: "Bon Jovi"
+                        color: "white"
+                        font.pixelSize: 10
+                    }
+                }
+            }
+
+            Column {
+                spacing: 4
+                anchors.verticalCenter: parent.verticalCenter
+                Text {
+                    text: "▲"
+                    color: "white"
+                    font.pixelSize: 12
+                    anchors.horizontalCenter: parent.horizontalCenter
+                }
+                Text {
+                    text: "Self driving"
+                    color: "white"
+                    font.pixelSize: 14
+                    font.bold: true
+                    anchors.horizontalCenter: parent.horizontalCenter
+                }
+                Text {
+                    text: "▼"
+                    color: "white"
+                    font.pixelSize: 12
+                    anchors.horizontalCenter: parent.horizontalCenter
+                }
+            }
 
             Row {
                 spacing: 6
@@ -241,7 +332,7 @@ ApplicationWindow {
                 }
                 Text {
                     text: parent.fuelLevel + "%"
-                    color: "black"
+                    color: "white"
                     font.pixelSize: 18
                     font.bold: true
                 }
@@ -270,7 +361,7 @@ ApplicationWindow {
                 }
                 Text {
                     text: parent.batteryLevel + "%"
-                    color: "black"
+                    color: "white"
                     font.pixelSize: 18
                     font.bold: true
                 }
