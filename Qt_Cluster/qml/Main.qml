@@ -11,7 +11,6 @@ ApplicationWindow {
     width: 600
     height: 400
     visible: true
-    visibility: "FullScreen"
     color: "black"
     title: "Pao Cluster"
 
