@@ -1,1 +1,21 @@
+# Ignore build artifacts
 build/
+CMakeFiles/
+CMakeCache.txt
+*.o
+*.obj
+*.exe
+*.dll
+*.so
+*.a
+*.lib
+*.qrc.cpp
+
+# Ignore assets
+Qt_Cluster/assets/
+
+# Ignore Qt Creator user files
+*.user
+*.pro.user
+*.qmake.stash
+*.qmake.cache
