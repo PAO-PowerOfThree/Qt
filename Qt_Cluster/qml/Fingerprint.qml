@@ -26,10 +26,6 @@ AnimatedImage {
     source: "qrc:/assets/volvo.gif"   // Must exist in your .qrc file
     opacity: 0.3
 
-    Component.onCompleted: {
-        // Start the animation safely after the component is ready
-        backgroundAnimation.running = true
-    }
 }
 
 
