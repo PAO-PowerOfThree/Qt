@@ -505,10 +505,4 @@ ExecStart=/usr/bin/ivi_app --verbose
 StandardOutput=file:/var/log/ivi_app.log
 StandardError=file:/var/log/ivi_app.err
 ```
-
----
-# License & Contributors
-
-Suggested license: **MIT** (permissive) or **Apache 2.0** if you want patent/grant clarity. Add a `CONTRIBUTING.md` if you expect collaborators.
-
 ---
