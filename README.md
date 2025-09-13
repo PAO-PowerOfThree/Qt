@@ -240,7 +240,19 @@ You used simple ASCII payloads for events and messages. For production, define a
 JSON is verbose but human-readable; CBOR or protobuf is more compact and binary-safe. SOME/IP payload length limits and encoding details should be verified for your middleware version.
 
 ---
-# QML / UI Integration Examples
+# QML / UI Integration 
+
+
+
+## 📸 Cluster (Yocto) Display Screenshots
+
+<img src="photos/fingercluster.png" width="100%">
+<img src="photos/fingercluster2.png" width="100%">
+<img src="photos/clusterscreen.png" width="100%">
+
+---
+
+
 
 **How to expose C++ singletons to QML**:
 In `main.cpp` (example):
