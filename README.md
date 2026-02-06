@@ -100,7 +100,7 @@ Each file's responsibility (short form - deeper explanations in next section):
 
 **Goal**: Safe, robust reading of frames and exposing vehicle values to QML.
 
-Key responsibilities (as in your code):
+Key responsibilities:
 - Create device with `QCanBus::instance()->createDevice("socketcan", "can0", &err)`
 - Connect to it and subscribe to `framesReceived` signal.
 - In `readCanData()` loop: call `framesAvailable()` then `readFrame()` repeatedly.
@@ -111,7 +111,7 @@ Key responsibilities (as in your code):
   ```cpp
   int adc = (frame.payload()[0] << 8) | frame.payload()[1];
   ```
-  That expression assumes the sender places the MSB in byte0 and LSB in byte1 (network-style big-endian). If your ECU uses little-endian, you'd reverse the combination. Confirm on the sender side.
+  That expression assumes the sender places the MSB in byte0 and LSB in byte1 (network-style big-endian). If ECU uses little-endian, you'd reverse the combination. Confirm on the sender side.
 
 - You clamp ADC values to `0..4095` (12-bit ADC). The `qBound(0, level, 4095)` assures the value remains in this range even if noisy/wrong frames arrive.
 
@@ -127,7 +127,7 @@ Key responsibilities (as in your code):
   ```cpp
   double voltage = 3.3 * double(adc) / 4095.0;
   ```
-Consider adding conversion helpers on `BusReader` if your UI needs percent or volts directly (expose as `Q_PROPERTY double batteryPercent() const` etc.).
+Consider adding conversion helpers on `BusReader` if UI needs percent or volts directly (expose as `Q_PROPERTY double batteryPercent() const` etc.).
 
 **Performance**:
 - `framesReceived` can fire frequently for heavy buses. Avoid expensive operations inside parsing loop. Buffer and emit coarse-grained signals (e.g., emit `batteryLevelChanged()` only when the displayed value bucket changes). You already do this via `if (m_batteryLevel != level)` which is good.
@@ -153,7 +153,7 @@ Consider adding conversion helpers on `BusReader` if your UI needs percent or vo
 - Serial delivers arbitrary-sized chunks, not neat lines. A multi-line message may arrive in fragments. The buffer + split approach concatenates until you detect a full line (`\r\n`) — robust and standard.
 
 **Command protocol**:
-- `sendEnroll()` and `sendClear()` call `emit requestPassword("ENROLL")` which opens a password prompt in your UI; after success you likely send an enrollment command over UART. For the low-level send, you use:
+- `sendEnroll()` and `sendClear()` call `emit requestPassword("ENROLL")` which opens a password prompt in UI; after success you likely send an enrollment command over UART. For the low-level send, you use:
   ```cpp
   m_serial->write((cmd + "\n").toUtf8());
   ```
@@ -169,7 +169,7 @@ Consider adding conversion helpers on `BusReader` if your UI needs percent or vo
   - Consider hardware-backed keystore or TPM on production devices.
 
 **Serial error modes**:
-- If the port fails to open, your code continues in test mode — good for UI development. When targeting the RPi, configure udev rules and permissions so the runtime user can own `/dev/ttyS0` or use a systemd service that adjusts capabilities.
+- If the port fails to open, the code continues in test mode — good for UI development. When targeting the RPi, configure udev rules and permissions so the runtime user can own `/dev/ttyS0` or use a systemd service that adjusts capabilities.
 
 
 ---
@@ -181,7 +181,7 @@ Consider adding conversion helpers on `BusReader` if your UI needs percent or vo
 - **Application lifecycle**: You create a `vsomeip::application` and run it in a dedicated `std::thread`. This avoids blocking the Qt event loop and also isolates the vsomeip runtime.
 - **Register availability handler**: When the remote server becomes available, subscribe to event groups. When it becomes unavailable, unsubscribe.
 - **Register message handlers**: For method responses and events, provide callbacks that `emit messageReceived(...)` for QML.
-- **Offer fingerprint service**: `app->offer_service(FINGER_SERVICE_ID, FINGER_INSTANCE_ID)` and `app->offer_event(...)` so AOSP clients can subscribe to your fingerprint event.
+- **Offer fingerprint service**: `app->offer_service(FINGER_SERVICE_ID, FINGER_INSTANCE_ID)` and `app->offer_event(...)` so AOSP clients can subscribe to the fingerprint event.
 - **Send fingerprint status**: `notify(FINGER_SERVICE_ID, FINGER_INSTANCE_ID, EVENT_ID_FINGER, payload)` with payload containing ASCII `"APPROVED"` or `"REFUSED"`. Use event semantics (notify) rather than method call for asynchronous broadcast.
 
 **Queued connections**:
@@ -193,7 +193,7 @@ Consider adding conversion helpers on `BusReader` if your UI needs percent or vo
 - `service-discovery`: controls multicast discovery; `multicast` and `port` must match peers
 - `logging.level`: set to `debug` while developing
 
-Ensure any multicast IPs and ports are allowed by your network / docker / IP stack.
+Ensure any multicast IPs and ports are allowed by the network / docker / IP stack.
 
 **Reliability choices**:
 - SOME/IP supports reliable/unreliable event types. Choose `RT_UNRELIABLE` for frequently-updated, non-critical events (e.g., speed) to save bandwidth. Use reliable for critical state or commands.
@@ -236,7 +236,7 @@ You used simple ASCII payloads for events and messages. For production, define a
 { "type": "fingerprint", "status": "APPROVED", "ts": 169..." }
 ```
 
-JSON is verbose but human-readable; CBOR or protobuf is more compact and binary-safe. SOME/IP payload length limits and encoding details should be verified for your middleware version.
+JSON is verbose but human-readable; CBOR or protobuf is more compact and binary-safe. SOME/IP payload length limits and encoding details should be verified for the middleware version.
 
 ---
 # QML / UI Integration 
@@ -389,23 +389,23 @@ sudo ip link set can0 up type can bitrate 500000
 # Verify
 ip -details link show can0
 ```
-If `can0` doesn't exist, ensure your hardware or virtual CAN (vcan) is created. For testing, you can do:
+If `can0` doesn't exist, ensure the hardware or virtual CAN (vcan) is created. For testing, you can do:
 ```bash
 sudo modprobe vcan
 sudo ip link add dev vcan0 type vcan
 sudo ip link set up vcan0
 ```
-Then run your app against `vcan0` by changing `createDevice("socketcan","vcan0")`.
+Then run the app against `vcan0` by changing `createDevice("socketcan","vcan0")`.
 
 ## Serial (udev rule)
 Create `/etc/udev/rules.d/99-esp32.rules`:
 ```
 KERNEL=="ttyUSB[0-9]*", ATTRS{idVendor}=="XXXX", ATTRS{idProduct}=="YYYY", SYMLINK+="esp32", MODE="0660", GROUP="dialout"
 ```
-Restart udev with `sudo udevadm control --reload-rules && sudo udevadm trigger` and then set your app to open `/dev/esp32` or `/dev/ttyS0` after symlink.
+Restart udev with `sudo udevadm control --reload-rules && sudo udevadm trigger` and then set the app to open `/dev/esp32` or `/dev/ttyS0` after symlink.
 
 ## Network & vsomeip
-- Ensure multicast is allowed and routers/switches don't block the discovery multicast address you configured (your `vsomeip.json` example uses 224.244.224.245 for discovery).
+- Ensure multicast is allowed and routers/switches don't block the discovery multicast address you configured ( `vsomeip.json` example uses 224.244.224.245 for discovery).
 
 - For development on a single host, set `unicast` to the host's IP and ensure the `applications`/`services` IDs match between peers.
 
@@ -474,7 +474,7 @@ Restart udev with `sudo udevadm control --reload-rules && sudo udevadm trigger` 
 - **Serial port cannot open**:
   - Wrong device path (`/dev/ttyUSB0` vs `/dev/ttyS0`) or permission denied. Add the user to `dialout` or udev rules.
 - **VSomeIP discovery or subscriptions not working**:
-  - Check multicast address and port in both peers' `vsomeip.json`. Ensure your host firewall allows multicast.
+  - Check multicast address and port in both peers' `vsomeip.json`. Ensure host firewall allows multicast.
 - **Events arrive but QML doesn't update**:
   - Check that you emit `XXXChanged()` signals and the `Q_PROPERTY` notifications are defined. QML bindings depend on these notifications.
 - **Memory leak on shutdown**:
