@@ -61,7 +61,6 @@ A simplified ASCII diagram:
 ---
 # Repository & File Map (detailed)
 
-Below is a recommended map (validate against your repo). For files you already shared, I list them and suggest a few common supportive files.
 
 ```
 /project-root
